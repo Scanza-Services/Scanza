@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanza</title>
+    <link rel="icon" href="scanza_logo.png" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="wrap">
+    <header>
+      <div class="logo"><img src="scanza_logo.png"/></div>
+      <div class="header-content">
+        <h1>Welcome to Scanza 🎉</h1>
+        <div class="sub">
+          <span class="badge" id="tableInfo">Table not set</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="stats" id="stats" style="display:none">
+      <div class="stat-card">
+        <div class="stat-icon">🍽️</div>
+        <div class="stat-info">
+          <h3 id="totalItems">0</h3>
+          <p>Total Items</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📂</div>
+        <div class="stat-info">
+          <h3 id="totalCategories">0</h3>
+          <p>Categories</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✨</div>
+        <div class="stat-info">
+          <h3 id="showingItems">0</h3>
+          <p>Showing</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input id="search" placeholder="🔍 Search dishes, ingredients, or descriptions..." />
+      <select id="cat"><option value="">All Categories</option></select>
+      <button id="refresh"><span>🔄 Refresh</span></button>
+      <a class="btn" id="qrLink" target="_blank"><span>📱 QR Code</span></a>
+    </div>
+
+    <div id="status" class="loader">
+      <div class="loader-spinner"></div>
+      <div class="loader-text">Loading delicious menu...</div>
+    </div>
+    
+    <div id="grid" class="grid" style="display:none"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
