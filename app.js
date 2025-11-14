@@ -1,6 +1,5 @@
 (async function(){
-  const SHEET_ID = "1vS73gWSiVe5WRCo6RtCVYumtjjnOxGSX3PT4fGgRY0SZYtlUh--ZjxkNR38KKlKIboitEIz9Sj5ij8p";
-  const CSV_PUB_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-${SHEET_ID}/pub?output=csv`;
+  const CSV_URL = "Menus - Menu (6).csv";
 
   const status = document.getElementById('status');
   const grid = document.getElementById('grid');
@@ -45,8 +44,8 @@
 
   async function load(){
     try{
-      const r = await fetch(CSV_PUB_URL, {cache:'no-store'});
-      if(!r.ok) throw new Error('Sheet fetch failed: ' + r.status);
+      const r = await fetch(CSV_URL, {cache:'no-store'});
+      if(!r.ok) throw new Error('CSV file not found. Make sure "Menus - Menu (6).csv" is in the same folder as index.html');
       const txt = await r.text();
       const rows = parseCSV(txt);
       if(!rows || rows.length < 2) throw new Error('No data found in sheet');
@@ -54,6 +53,24 @@
       const items = rows.slice(1).map(rw=>{
         const o={};
         for(let i=0;i<header.length;i++) o[header[i]] = rw[i] ? rw[i].trim() : '';
+        // Map CSV columns to standard format
+        o.name = o.item_name || o.name || '';
+        o.image = o.image_url || o.image || '';
+        // Convert ImgBB links to direct image URLs
+        if(o.image && o.image.includes('ibb.co')){
+          // Convert https://ibb.co/XZ0rydHN to https://i.ibb.co/XZ0rydHN/image.jpg
+          const match = o.image.match(/ibb\.co\/([a-zA-Z0-9]+)$/);
+          if(match) {
+            o.image = `https://i.ibb.co/${match[1]}/image.jpg`;
+          }
+        }
+        // Convert Google Drive links to direct download URLs
+        else if(o.image && o.image.includes('drive.google.com')){
+          const match = o.image.match(/\/d\/([a-zA-Z0-9-_]+)/);
+          if(match) {
+            o.image = `https://drive.google.com/uc?export=view&id=${match[1]}`;
+          }
+        }
         return o;
       }).filter(it => it.name); // Filter out empty rows
       render(items);
@@ -98,12 +115,12 @@
       }
       
       grid.innerHTML = filtered.map(it=>{
-        const img = it.image_url || it.image || '';
-        const src = img ? escape(img) : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
-        return `<div class="card">
+        const img = it.image || '';
+        const src = img ? img : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
+        return `<div class="card" onclick="showItemDetails(${escape(JSON.stringify(it))})">
           <div class="card-image-wrapper">
             <img class="thumb" src="${src}" alt="${escape(it.name)}" loading="lazy" 
-                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'"/>
+                  onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'"/>
           </div>
           <div class="card-content">
             <div class="row">
@@ -137,6 +154,11 @@
     // QR code ke liye proper URL - yahan apni actual website URL daalo
     let baseUrl = location.href.split('?')[0];
     
+    // Agar local/Claude artifact hai to placeholder URL
+    if (baseUrl.includes('claude.ai') || baseUrl.includes('localhost')) {
+      baseUrl = 'https://yourwebsite.com/menu'; // YAHAN APNI WEBSITE URL DAALO
+    }
+    
     qrLink.href = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(baseUrl + '?table=1');
     qrLink.onclick = (e) => {
       e.preventDefault();
@@ -160,4 +182,88 @@
   } 
 
   await load();
+  
+  // Global functions for item details modal
+  window.showItemDetails = function(itemData) {
+    const item = typeof itemData === 'string' ? JSON.parse(itemData) : itemData;
+    const src = item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800';
+    
+    // Parse ingredients (comma-separated in sheet)
+    const ingredients = (item.ingredients || item.materials || '').split(',').map(i => i.trim()).filter(Boolean);
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <div class="modal-header">
+          <img src="${src}" alt="${escape(item.name)}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800'" />
+          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
+        </div>
+        <div class="modal-body">
+          <h2 class="modal-title">${escape(item.name)}</h2>
+          <div class="modal-price">${escape(item.price)}</div>
+          
+          <div class="modal-section">
+            <div class="modal-section-title">📝 Description</div>
+            <div class="modal-section-content">${escape(item.description || 'A delicious dish prepared with care and quality ingredients.')}</div>
+          </div>
+          
+          ${ingredients.length > 0 ? `
+          <div class="modal-section">
+            <div class="modal-section-title">🥘 Ingredients & Materials</div>
+            <div class="ingredient-list">
+              ${ingredients.map(ing => `<span class="ingredient-tag">${escape(ing)}</span>`).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
+          <div class="modal-section">
+            <div class="modal-section-title">ℹ️ Item Information</div>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Category</div>
+                <div class="info-value">${escape(item.category || 'Special')}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Prep Time</div>
+                <div class="info-value">${escape(item.prep_time || item.time || '15-20 min')}</div>
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          ${item.allergens || item.dietary_info ? `
+          <div class="modal-section">
+            <div class="modal-section-title">⚠️ Dietary Information</div>
+            <div class="modal-section-content">${escape(item.allergens || item.dietary_info)}</div>
+          </div>
+          ` : ''}
+          
+          ${item.calories || item.nutrition ? `
+          <div class="modal-section">
+            <div class="modal-section-title">🔥 Nutritional Info</div>
+            <div class="modal-section-content">${escape(item.calories || item.nutrition)} calories per serving</div>
+          </div>
+          ` : ''}
+          
+          <div class="modal-actions">
+            <button class="modal-btn modal-btn-secondary" onclick="this.closest('.modal-overlay').remove()">Close</button>
+            
+          </div>
+        </div>
+      </div>
+    `;
+    
+    modal.onclick = (e) => {
+      if (e.target === modal) modal.remove();
+    };
+    
+    document.body.appendChild(modal);
+  };
+  
+  window.addToOrder = function(itemName) {
+    alert(`✅ ${itemName} added to your order!`);
+    // Yahan actual order functionality add kar sakte ho
+  };
 })();

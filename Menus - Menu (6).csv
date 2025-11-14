@@ -1,0 +1,21 @@
+ID,item_name,description,price,category,availability,image_url
+1,Margherita Pizza,Classic cheese pizza with tomato base,199,Pizza,Yes,https://ibb.co/XZ0rydHN
+2,Farmhouse Pizza,Loaded with veggies and cheese,299,Pizza,Yes,https://ibb.co/C3jQJNvz
+3,Veg Burger,Crispy veg patty with lettuce & mayo,79,Burger,Yes,https://ibb.co/PGsLGXb8
+4,Cheese Burger,Extra cheese burger with soft bun,99,Burger,Yes,https://ibb.co/vgt3FRT
+5,French Fries,Crispy salted french fries,69,Snacks,Yes,https://ibb.co/4wcHkLMP
+6,Peri-Peri Fries,Spicy peri peri coated fries,89,Snacks,No,https://ibb.co/ZRJQmtzt
+7,Cold Coffee,Iced chilled coffee with cream,129,Beverage,Yes,https://ibb.co/N2712Z9N
+8,Oreo Shake,Thick shake blended with Oreo,149,Beverage,Yes,https://ibb.co/2TMfZ38
+9,Pasta Alfredo,White sauce creamy pasta,179,Pasta,Yes,https://ibb.co/90CTsbD
+10,Pasta Arrabiata,Red spicy tangy sauce pasta,169,Pasta,Yes,https://ibb.co/ZzS9yq5c
+11,Paneer Wrap,Paneer tikka wrapped in tortilla,149,Wraps,Yes,https://ibb.co/qMHNmbdk
+12,Veg Roll,Street-style veg masala roll,59,Wraps,Yes,https://ibb.co/35KkqB9j
+13,Chicken Momos,Steamed chicken dumplings,129,Momos,No,https://ibb.co/ksmqKkZF
+14,Veg Momos,Steamed vegetable dumplings,99,Momos,Yes,https://ibb.co/3m64L0qp
+15,Brownie,Chocolate brownie served warm,79,Dessert,Yes,https://ibb.co/mrqRjkpf
+16,Chocolate Lava Cake,Molten chocolate filled cake,99,Dessert,Yes,https://ibb.co/GfTpnfn1
+17,Lemon Iced Tea,Fresh chilled lemon iced tea,79,Beverage,Yes,https://ibb.co/LX6LBpBw
+18,Masala Maggie,Street-style spicy Maggie noodles,69,Snacks,Yes,https://ibb.co/21YjxBPf
+19,Garlic Bread,Cheesy garlic toasted bread,129,Snacks,Yes,https://ibb.co/DgKDqYrV
+20,Milkshake Strawberry,Sweet & fruity strawberry shake,119,Beverage,Yes,https://ibb.co/8gfYfT66
